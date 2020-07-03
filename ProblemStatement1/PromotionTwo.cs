@@ -61,8 +61,8 @@ namespace ProblemStatement1
                             }
                             else
                             {
-                                billAsString.Append(matched2.Quantity + " * " + promotions.ProductOneName + "\t=\t-");
-                                billAsString.Append(matched2.Quantity + " * " + promotions.ProductTwoName + "\t=\t" + (matched2.Quantity * promotions.OfferPrice));
+                                billAsString.Append(matched2.Quantity + " * " + promotions.ProductOneName + "\t=\t-" + "\n");
+                                billAsString.Append(matched2.Quantity + " * " + promotions.ProductTwoName + "\t=\t" + (matched2.Quantity * promotions.OfferPrice) + "\n");
                                 billAsString.Append(difference + " * " + promotions.ProductOneName + "\t=\t" + (difference * matched1.Prod.ProductPrice) + "\n");
                                 total = (matched2.Quantity * promotions.OfferPrice) + (difference * matched1.Prod.ProductPrice);
                             }
