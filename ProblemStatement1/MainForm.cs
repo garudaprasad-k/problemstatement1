@@ -6,51 +6,60 @@ namespace ProblemStatement1
     public partial class MainForm : Form
     {
         private Cart _cart;
-        private Store _store;
-        private PromotionFactory _promotion;
-        private Billing _billing;
 
         public MainForm()
         {
             InitializeComponent();
             InitInstances();
+            InitDummyData();
             InitDataBindings();
-        }
+        }        
 
         private void InitInstances()
         {
             this._cart = new Cart();
-            this._store = Store.Instance();
-            this._promotion = PromotionFactory.Instance();
 
             this.dgvAllProducts.AutoGenerateColumns = false;
             this.dgvCartList.AutoGenerateColumns = false;
             this.dgvPromotionOne.AutoGenerateColumns = false;
             this.dgvPromotionTwo.AutoGenerateColumns = false;
-        }        
+        }
+
+        private void InitDummyData()
+        {
+            Store.Instance.AddProductToStore("A", 50);
+            Store.Instance.AddProductToStore("B", 30);
+            Store.Instance.AddProductToStore("C", 20);
+            Store.Instance.AddProductToStore("D", 15);
+
+            PromotionFactory.Instance.AddNewPromotionOne("A", 3, 130);
+            PromotionFactory.Instance.AddNewPromotionOne("B", 2, 45);
+
+            PromotionFactory.Instance.AddNewPromotionTwo("C", "D", 30);
+        }
 
         private void InitDataBindings()
         {
 
             var source = new BindingSource();
-            source.DataSource = _store.AllProducts;
+            source.DataSource = Store.Instance.AllProducts;
             dgvAllProducts.DataSource = source;
 
 
             source = new BindingSource();
-            source.DataSource = _store.AllProducts;
+            source.DataSource = Store.Instance.AllProducts;
             cbboxSelectProduct.DataSource = source;
 
             source = new BindingSource();
-            source.DataSource = _store.AllProducts;
+            source.DataSource = Store.Instance.AllProducts;
             cbboxPromotion1Product.DataSource = source;
 
             source = new BindingSource();
-            source.DataSource = _store.AllProducts;
+            source.DataSource = Store.Instance.AllProducts;
             cbboxPromotion2Product1.DataSource = source;
 
             source = new BindingSource();
-            source.DataSource = _store.AllProducts;
+            source.DataSource = Store.Instance.AllProducts;
             cbboxPromotion2Product2.DataSource = source;
 
             source = new BindingSource();
@@ -58,24 +67,24 @@ namespace ProblemStatement1
             dgvCartList.DataSource = source;
 
             source = new BindingSource();
-            source.DataSource = _promotion.PromotionOneInstance.Data;
+            source.DataSource = PromotionFactory.Instance.PromotionOneInstance.Data;
             dgvPromotionOne.DataSource = source;
 
             source = new BindingSource();
-            source.DataSource = _promotion.PromotionTwoInstance.Data;
+            source.DataSource = PromotionFactory.Instance.PromotionTwoInstance.Data;
             dgvPromotionTwo.DataSource = source;
         }
 
         private void btnAddNewProduct_Click(object sender, EventArgs e)
         {
-            bool changesMade = this._store.addProductToStore(txtboxNewProductName.Text, numNewProductPrice.Value);
+            bool changesMade = Store.Instance.AddProductToStore(txtboxNewProductName.Text, numNewProductPrice.Value);
             InitDataBindings();
             RefreshData(changesMade);
         }
 
         private void btnAddProductToCart_Click(object sender, EventArgs e)
         {
-            _cart.AddProductToCart(
+            _cart.AddPurchaseToCart(
                     cbboxSelectProduct.SelectedValue.ToString()
                     , Convert.ToInt32(Math.Round(numQuantity.Value, 0))
                  );
@@ -86,15 +95,14 @@ namespace ProblemStatement1
         {
             if (_cart.AllPurchases != null && _cart.AllPurchases.Count > 0)
             {
-                this._billing = new Billing(_cart);
-                this._billing.bill();
-                this.rtbFinalBill.Text = _billing.FinalBill;
+                Billing.Instance.Bill(_cart);
+                this.rtbFinalBill.Text = Billing.Instance.FinalBill;
             }
         }
 
         private void btnAddPromotionOne_Click(object sender, EventArgs e)
         {
-            bool changesMade = _promotion.addNewPromotionOne(
+            bool changesMade = PromotionFactory.Instance.AddNewPromotionOne(
                 cbboxPromotion1Product.Text,
                 Convert.ToInt32(Math.Round(numProm1Units.Value, 0)),
                 numProm1OffferPrice.Value
@@ -115,7 +123,7 @@ namespace ProblemStatement1
 
         private void btnAddPromotionTwo_Click(object sender, EventArgs e)
         {
-            bool changesMade = _promotion.addNewPromotionTwo(
+            bool changesMade = PromotionFactory.Instance.AddNewPromotionTwo(
                 cbboxPromotion2Product1.Text,
                 cbboxPromotion2Product2.Text,
                 numProm2OfferPrice.Value
@@ -136,7 +144,7 @@ namespace ProblemStatement1
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
                 e.RowIndex >= 0)
             {
-                this._store.RemoveProductFromStore(this._store.AllProducts[e.RowIndex]);
+                Store.Instance.RemoveProductFromStore(Store.Instance.AllProducts[e.RowIndex]);
                 InitDataBindings();
                 RefreshData(true);
             }
@@ -149,7 +157,7 @@ namespace ProblemStatement1
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
                 e.RowIndex >= 0)
             {
-                this._promotion.removePromotionOne(this._promotion.PromotionOneInstance.Data[e.RowIndex]);
+                PromotionFactory.Instance.RemovePromotionOne(PromotionFactory.Instance.PromotionOneInstance.Data[e.RowIndex]);
                 InitDataBindings();
                 RefreshData(true);
             }
@@ -162,7 +170,7 @@ namespace ProblemStatement1
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
                 e.RowIndex >= 0)
             {
-                this._promotion.removePromotionTwo(this._promotion.PromotionTwoInstance.Data[e.RowIndex]);
+                PromotionFactory.Instance.RemovePromotionTwo(PromotionFactory.Instance.PromotionTwoInstance.Data[e.RowIndex]);
                 InitDataBindings();
                 RefreshData(true);
             }

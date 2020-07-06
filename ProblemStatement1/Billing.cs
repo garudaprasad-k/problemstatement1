@@ -1,45 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace ProblemStatement1
 {
-    class Billing
+    public class Billing
     {
-
-        private Cart _cart;
+        private static Billing _instance;
         private StringBuilder _finalBill;
         private decimal _total = 0;
+
+        public static Billing Instance
+        {
+            get
+            {
+                if (_instance == null) _instance = new Billing();
+                return _instance;
+            }
+        }
 
         public string FinalBill
         {
             get { return _finalBill.ToString(); }
         }
 
-
-        public Billing(Cart cart)
+        public decimal BillTotal
         {
-            _cart = cart;
-            _finalBill = new StringBuilder();
+            get { return _total; }
         }
 
-        public void bill()
+
+        private Billing()
         {
-            decimal totals = 0;            
 
-            PromotionFactory.Instance().PromotionOneInstance.bill(_cart.AllPurchases, ref _finalBill, ref totals);
+        }
+
+        public void Bill(Cart cart)
+        {
+            _finalBill = new StringBuilder();
+            _total = 0;
+            decimal totals = 0;
+
+            PromotionFactory.Instance.PromotionOneInstance.Bill(cart.AllPurchases, ref _finalBill, ref totals);
             _total += totals;
 
-            PromotionFactory.Instance().PromotionTwoInstance.bill(_cart.AllPurchases, ref _finalBill, ref totals);
+            PromotionFactory.Instance.PromotionTwoInstance.Bill(cart.AllPurchases, ref _finalBill, ref totals);
             _total += totals;
 
-            PromotionFactory.Instance().bill(_cart.AllPurchases, ref _finalBill, ref totals);
+            PromotionFactory.Instance.Bill(cart.AllPurchases, ref _finalBill, ref totals);
             _total += totals;
 
             _finalBill.Append("\n================\n");
-            _finalBill.Append("Total\t"+ _total);
+            _finalBill.Append("Total\t" + _total);
         }
     }
 }

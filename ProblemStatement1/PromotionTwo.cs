@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace ProblemStatement1
@@ -18,17 +17,20 @@ namespace ProblemStatement1
             _data = new List<PromotionTwoData>();            
         }
 
-        public void addNewPromotion(string productname1, string productname2, decimal offerPrice)
+        public void AddNewPromotion(string productname1, string productname2, decimal offerPrice)
         {
             _data.Add(new PromotionTwoData(productname1, productname2, offerPrice));
         }
 
-        public void removePromotion(PromotionTwoData promotionData)
+        public void RemovePromotion(PromotionTwoData promotionData)
         {
-            _data.Remove(promotionData);
+            if (_data.IndexOf(promotionData) > -1)
+            {
+                _data.Remove(promotionData);
+            }
         }
 
-        public void bill(List<Purchase> purchases, ref StringBuilder billAsString, ref decimal total)
+        public void Bill(List<Purchase> purchases, ref StringBuilder billAsString, ref decimal total)
         {
             total = 0;
             if (_data != null && _data.Count > 0 && purchases.Count > 0)

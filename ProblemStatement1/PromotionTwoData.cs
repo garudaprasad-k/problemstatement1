@@ -3,20 +3,18 @@
     public class PromotionTwoData
     {
         private string _productOneName;
+        private string _productTwoName;
+        private decimal _offerPrice;
 
         public string ProductOneName
         {
             get { return _productOneName; }
-        }
-
-        private string _productTwoName;
+        }        
 
         public string ProductTwoName
         {
             get { return _productTwoName; }
-        }
-
-        private decimal _offerPrice;
+        }        
 
         public decimal OfferPrice
         {

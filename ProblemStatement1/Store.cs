@@ -4,15 +4,18 @@ using System.Collections.Generic;
 namespace ProblemStatement1
 {
     public class Store
-    {      
+    {
         private static Store _instance = new Store();
-
-        public static Store Instance()
-        {
-            return _instance;
-        }
-
         private List<Product> _products;
+
+        public static Store Instance
+        {
+            get
+            {
+                if (_instance == null) _instance = new Store();
+                return _instance;
+            }
+        }
 
         public List<Product> AllProducts
         {
@@ -22,16 +25,11 @@ namespace ProblemStatement1
         private Store()
         {
             _products = new List<Product>();
-            this.addProductToStore("A", 50);
-            this.addProductToStore("B", 30);
-            this.addProductToStore("C", 20);
-            this.addProductToStore("D", 15);
         }
 
-
-        public bool addProductToStore(string productName, decimal price)
+        public bool AddProductToStore(string productName, decimal price)
         {
-            if (productName.Equals(string.Empty) || this.exists(productName) || price <= 0)
+            if (productName.Equals(string.Empty) || this.Exists(productName) || price <= 0)
             {
                 return false;
             }
@@ -42,10 +40,13 @@ namespace ProblemStatement1
 
         public void RemoveProductFromStore(Product product)
         {
-            _products.Remove(product);
+            if (_products.IndexOf(product) > -1)
+            {
+                _products.Remove(product);
+            }
         }
 
-        public bool exists(string productname)
+        private bool Exists(string productname)
         {
             return (this._products.FindIndex(x => x.ProductName.Equals(productname,
                    StringComparison.OrdinalIgnoreCase)) != -1);
